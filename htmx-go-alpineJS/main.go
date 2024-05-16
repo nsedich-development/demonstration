@@ -4,6 +4,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"encoding/json"
 )
 
 type Todo struct {
@@ -32,8 +33,14 @@ func init() {
 
 // handlers
 func indexHandler(w http.ResponseWriter, r *http.Request) {
+	json, err := json.Marshal(todos)
+	
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	tmpl := templates["index.html"]
-	tmpl.ExecuteTemplate(w, "index.html", nil)
+	tmpl.ExecuteTemplate(w, "index.html", map[string]template.JS{"Todos": template.JS(json)})
 }
 
 func main() {
